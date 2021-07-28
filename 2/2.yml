@@ -3,20 +3,14 @@
   hosts: all
   become: yes
   tasks:
-  - name: install Apache server
+  - name: remove Apache server
     yum:
       name: httpd
-      state: present
-  - name: start service httpd and ensure httpd is running
-    service:
-      name: httpd
-      state: started
-  - name: create index.html
-    lineinfile:
+      state: removed
+  - name: remove index.html
+    file:
       path: /var/www/html/index.html
-      create: yes
-      line: “Welcome to my web server”
-      state: present
+      state: absent
   - name: install firewalld
     yum:
       name: firewalld
@@ -30,10 +24,10 @@
       zone: public
       port: 80/tcp
       permanent: true
-      state: enabled
+      state: disabled
   - name: permit traffic on port 443/tcp
     firewalld:
       zone: public
       port: 443/tcp
       permanent: true
-      state: enabled
+      state: disabled
