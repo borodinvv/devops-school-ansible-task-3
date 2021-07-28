@@ -1,5 +1,5 @@
 ---
-- name: playbook #1
+- name: playbook #2
   hosts: all
   become: yes
   tasks:
