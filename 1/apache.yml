@@ -1,0 +1,14 @@
+
+---
+- name: Apache role
+  hosts: all
+  become: yes
+
+  roles:
+    - apache
+  
+
+  
+
+
+

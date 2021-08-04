@@ -1,0 +1,53 @@
+---
+# tasks file for apache
+
+  - name: install Apache server
+    yum:
+      name: httpd
+      state: present
+
+  - name: start service httpd and ensure httpd is running
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: create document root
+    file:
+      path: "/var/www/{{ http_host_dir }}"
+      state: directory
+      mode: '0755'
+
+  - name: create index.html using Jinja2
+    template:
+      src: index.html.j2
+      dest: "/var/www/{{ http_host_dir }}/index.html"
+
+  - name: set up VirtualHost         
+    template:
+      src: apache.conf.j2
+      dest: "/etc/httpd/conf.d/{{ http_conf_file }}"
+    notify: restart httpd
+
+    
+
+  - name: install firewalld
+    yum:
+      name: firewalld
+      state: present
+  - name: start service firewalld and ensure firewalld is running
+    service:
+      name: firewalld
+      state: started
+  - name: permit traffic on ports
+    firewalld:
+      zone: public
+      port: "{{ item }}/tcp"
+      permanent: true
+      state: enabled
+    loop:
+      - 80
+      - 443
+      - 8080
+    notify: 
+      - reload firewalld

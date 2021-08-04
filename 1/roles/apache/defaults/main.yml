@@ -1,0 +1,6 @@
+---
+# defaults file for apache
+
+http_port: "8080"
+http_host_dir: "for_devops_school"
+http_conf_file: for_devops_school.conf
