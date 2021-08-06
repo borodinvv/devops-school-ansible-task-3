@@ -1,0 +1,13 @@
+
+---
+- name: Apache role
+  hosts: node3.example.com
+
+  roles:
+    - vsftpd
+  
+
+  
+
+
+

@@ -1,0 +1,60 @@
+---
+# tasks file for vsftpd
+
+  - name: Install required packages
+    yum:
+      name: "{{ item }}"
+      state: latest
+    loop: "{{ packages }}"
+  - name: Make sure services are started and enabled
+    service:
+      name: "{{ item }}"
+      enabled: yes
+      state: started
+    loop: "{{ services }}"
+  - name: Copy FTP config using Jinja2 Template
+    template:
+      src: vsftpd.j2
+      dest: /etc/vsftpd/vsftpd.conf
+    notify:
+      - restart vsftpd
+  - name: Create ftp pub folder and set permissions
+    file:
+      path: /var/ftp/pub
+      state: directory
+      mode: 0755
+  - name: Creafe ftp upload folder and set permissions
+    file:
+      path: /var/ftp/pub/upload
+      state: directory
+      mode: 0777
+  - name: Set SElinux boolean for Anonymous FTP upload
+    seboolean:
+      name: ftpd_anon_write
+      state: yes
+      persistent: yes
+  - name: Allow full read/write access through SELinux for el6
+    seboolean:
+      name: allow_ftpd_full_access
+      state: yes
+      persistent: yes
+  - name: Set SElinux file context
+    sefcontext:
+      target: "{{ item }}"
+      setype: public_content_rw_t
+      state: present
+    loop: "{{ fileperms }}" 
+    notify:
+      - run restorecon
+  - name: permit traffic on ports
+    firewalld:
+      zone: public
+      port: "{{ item }}/tcp"
+      permanent: true
+      state: enabled
+    loop:
+      - 20
+      - 21
+    notify: 
+      - reload firewalld   
+ 
