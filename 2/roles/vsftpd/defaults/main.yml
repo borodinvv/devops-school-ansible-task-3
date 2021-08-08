@@ -12,6 +12,6 @@
       - vsftpd
       - firewalld
       - policycoreutils-python-utils
-    fileperms:
+    dirs:
       - /var/ftp/pub
       - /var/ftp/pub/upload
