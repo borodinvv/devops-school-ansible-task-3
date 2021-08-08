@@ -1,4 +1,4 @@
-My First Role in Ansible
+Ansible Role for Apache Web Server
 =========
 
 Install and run Apache Web Server.
